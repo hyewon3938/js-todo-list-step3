@@ -1,14 +1,19 @@
-import { $, $$ } from "../lib/util.js";
+import { $ } from "../lib/util.js";
 import { PRIORITY } from "../constants/constant.js";
 
+// models
 import MemberModel from "./model/MemberModel.js";
 import TodoItemModel from "./model/TodoItemModel.js";
+
+// components
 import TeamTitle from "./TeamTitle.js";
 import MemberList from "./MemberList.js";
 import TodoInput from "./TodoInput.js";
 import TodoDeleteAll from "./TodoDeleteAll.js";
 import TodoFilter from "./TodoFilter.js";
+import TodoListItem from "./TodoListItem.js";
 
+// events
 import { onAddMember } from "./event/Team.js";
 import { onAddItem } from "./event/TodoInput.js";
 import { onDeleteAllItem } from "./event/TodoDeleteAll.js";
@@ -36,11 +41,6 @@ class Team {
     new TeamTitle({ titleName: this.teamData.name });
     this.memberList = new MemberList({ memberList: this.memberListData });
     this.onAddMember = onAddMember;
-    this.onDeleteItem = onDeleteItem;
-    this.onCompleteItem = onCompleteItem;
-    this.onEditingItem = onEditingItem;
-    this.onEditItem = onEditItem;
-    this.onSetPriority = onSetPriority;
     this.init();
   }
 
@@ -55,32 +55,20 @@ class Team {
   }
 
   registerEventListener() {
-    //Team 이벤트
     $("#add-user-button").addEventListener("click", this.onAddMember.bind(this));
-    //TodoList 이벤트
-    $$(".destroy").forEach((element) => {
-      element.addEventListener("click", (event) => this.onDeleteItem(event));
-    });
-    $$(".toggle").forEach((element) => {
-      element.addEventListener("click", (event) => this.onCompleteItem(event));
-    });
-    $$(".label").forEach((element) => {
-      element.addEventListener("dblclick", (event) => this.onEditingItem(event));
-    });
-    $$(".edit").forEach((element) => {
-      element.addEventListener("keydown", (event) => this.onEditItem(event));
-    });
-    $$(".select").forEach((element) => {
-      element.addEventListener("click", (event) => {
-        this.onSetPriority(event);
-      });
-    });
   }
 
   addComponentEvent() {
     new TodoInput({ onAddItem: onAddItem.bind(this) });
     new TodoDeleteAll({ onDeleteAll: onDeleteAllItem.bind(this) });
     new TodoFilter({ filtering: filtering.bind(this) });
+    new TodoListItem({
+      onDeleteItem: onDeleteItem.bind(this),
+      onCompleteItem: onCompleteItem.bind(this),
+      onEditingItem: onEditingItem.bind(this),
+      onEditItem: onEditItem.bind(this),
+      onSetPriority: onSetPriority.bind(this),
+    });
   }
 }
 
